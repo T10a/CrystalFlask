@@ -1,0 +1,16 @@
+[
+{
+  "modid": "crystalflask",
+  "name": "Crystal Flask",
+  "description": "A mod for Minecraft that adds a renewable healing source. Perfect for adventures in cursed kingdoms!",
+  "version": "1.10.2-PREALPHA",
+  "mcversion": "1.10.2",
+  "url": "https://github.com/T10a/crystalflask",
+  "updateUrl": "",
+  "authorList": ["T-10a"],
+  "credits": "MrCrayfish for his nifty tutorials.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
