@@ -1,0 +1,7 @@
+item.crystalflask.estusflask.name=Crystal Flask
+item.crystalflask.estus_shard.name=Crystal Flask Shard
+item.crystalflask.estus_ash.name=Crystal Flask Ash
+
+tile.crystalflask.bonfire.name=Bonfire
+
+itemGroup.tabCrystalFlask=Crystal Flask Mod

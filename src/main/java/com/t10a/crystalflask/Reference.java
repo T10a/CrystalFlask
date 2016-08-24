@@ -1,4 +1,4 @@
-package com.t10a.crystalflask.reference;
+package com.t10a.crystalflask;
 
 public class Reference
 {
@@ -19,6 +19,30 @@ public class Reference
         private String registryName;
 
         ItemBase(String unlocalizedName, String registryName)
+        {
+            this.unlocalizedName = unlocalizedName;
+            this.registryName = registryName;
+        }
+
+        public String getRegistryName()
+        {
+            return registryName;
+        }
+
+        public String getUnlocalizedName()
+        {
+            return unlocalizedName;
+        }
+    }
+
+    public enum BlockBase
+    {
+        BONFIRE("bonfire","BlockBonfire");
+
+        private String unlocalizedName;
+        private String registryName;
+
+        BlockBase(String unlocalizedName, String registryName)
         {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;

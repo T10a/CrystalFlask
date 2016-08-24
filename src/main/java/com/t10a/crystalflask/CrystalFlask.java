@@ -1,7 +1,9 @@
 package com.t10a.crystalflask;
 
+import com.t10a.crystalflask.init.ModBlocks;
+import com.t10a.crystalflask.init.ModItems;
 import com.t10a.crystalflask.proxy.ICommonProxy;
-import com.t10a.crystalflask.reference.Reference;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -17,10 +19,17 @@ public class CrystalFlask
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS,serverSide = Reference.SERVER_PROXY_CLASS)
     public static ICommonProxy proxy;
 
+    public static final CreativeTabs ESTUSTAB = new CrystalTab();
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         System.out.println("Pre Initialisation!");
+        ModItems.init();
+        ModItems.register();
+
+        ModBlocks.init();
+        ModBlocks.register();
     }
 
     @Mod.EventHandler
