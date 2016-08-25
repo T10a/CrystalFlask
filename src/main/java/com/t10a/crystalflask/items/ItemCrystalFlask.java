@@ -41,7 +41,7 @@ public class ItemCrystalFlask extends Item
     //Catches whether or not this item is drinkable or not.
     public static boolean getUsable(ItemStack stack)
     {
-        if(EnumAction.DRINK == stack.getItemUseAction())
+        if(stack.getItemUseAction() == EnumAction.DRINK)
         {
             return true;
         }
@@ -90,50 +90,6 @@ public class ItemCrystalFlask extends Item
         return new ActionResult(EnumActionResult.SUCCESS, stack);
     }
 
-    /*Big chunk o' code. This checks whether if the player can edit blocks (this'll be useful for when this can be used to upgrade the flask.), and then check the Item for NBT,
-    * and then finally, if the block it's checking is a Bonfire it'll refill it to the Max Uses NBT (This also happens when Uses is applied to the item.)
-    */
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
-    {
-        if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack))
-        {
-            return EnumActionResult.FAIL;
-        }
-        else
-        {
-            NBTTagCompound nbt;
-            IBlockState iblockstate = world.getBlockState(pos);
-            Block block = iblockstate.getBlock();
-
-            if (stack.hasTagCompound())
-            {
-                nbt = stack.getTagCompound();
-            }
-            else
-            {
-                nbt = new NBTTagCompound();
-            }
-
-            if (nbt.hasKey("Uses"))
-            {
-                if (facing != EnumFacing.DOWN && block == ModBlocks.bonfire)
-                {
-                    nbt.setInteger("Uses", nbt.getInteger("Max Uses"));
-                    return EnumActionResult.SUCCESS;
-                }
-                else return EnumActionResult.PASS;
-            }
-            else
-            {
-                nbt.setInteger("Uses", 1);
-                nbt.setInteger("Max Uses", 1);
-            }
-            stack.setTagCompound(nbt);
-
-            return EnumActionResult.PASS;
-        }
-    }
-
     //Another chunk. If this item has metadata, it'll get it. Then, if it has the metadata "Uses", it'll check to see if it is more than 0. If it is, and this isn't on the server side, it'll
     @Nullable
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
@@ -155,7 +111,10 @@ public class ItemCrystalFlask extends Item
                 nbt.setInteger("Uses", nbt.getInteger("Uses") - 1);
                 if (!worldIn.isRemote)
                 {
-                    entityLiving.addPotionEffect(new PotionEffect(MobEffects.INSTANT_HEALTH, 1, 1));
+                    if(nbt.getInteger("Potency") >= 0)
+                    {
+                        entityLiving.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 25 * nbt.getInteger("Potency"), 3));
+                    }
                 }
             }
         }
@@ -163,6 +122,7 @@ public class ItemCrystalFlask extends Item
         {
             nbt.setInteger("Uses", 1);
             nbt.setInteger("Max Uses", 1);
+            nbt.setInteger("Potency", 0);
         }
         stack.setTagCompound(nbt);
 
@@ -173,10 +133,11 @@ public class ItemCrystalFlask extends Item
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List lores, boolean b)
     {
-        lores.add("A lone flask, used to contain §mestus§r§7 a magic flame that restores the health of the drinker. ");
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("Uses"))
         {
             lores.add("Uses: " + Integer.toString(stack.getTagCompound().getInteger("Uses")));
+            lores.add("Max Uses: " + Integer.toString(stack.getTagCompound().getInteger("Max Uses")));
+            lores.add("Potency: " + Integer.toString(stack.getTagCompound().getInteger("Potency")));
         }
     }
 }

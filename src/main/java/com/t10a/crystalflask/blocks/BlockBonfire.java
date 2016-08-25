@@ -2,14 +2,20 @@ package com.t10a.crystalflask.blocks;
 
 import com.t10a.crystalflask.CrystalFlask;
 import com.t10a.crystalflask.Reference;
+import com.t10a.crystalflask.init.ModBlocks;
+import com.t10a.crystalflask.init.ModItems;
+import com.t10a.crystalflask.tileentity.TileEntityBonfire;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -20,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Random;
 
-public class BlockBonfire extends Block
+public class BlockBonfire extends Block implements ITileEntityProvider
 {
     //private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(x1, y1, z1, x2, y2, z2);
     private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0625 * 3, 0, 0.0625 * 4, 0.0625 * 12, 0.0625 * 15, 0.0625 * 12);
@@ -79,5 +85,50 @@ public class BlockBonfire extends Block
         }
         worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1 + d4, d2, 0.0D, 0.0D, 0.0D, new int[0]);
         worldIn.spawnParticle(EnumParticleTypes.FLAME, d0, d1 + d4, d2, 0.0D, 0.0D, 0.0D, new int[0]);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if(!worldIn.isRemote)
+        {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityBonfire)
+            {
+                TileEntityBonfire bonfire = (TileEntityBonfire) tileEntity;
+                if(heldItem != null)
+                {
+                    if (heldItem.getItem() == ModItems.estus_shard)
+                    {
+                        if(bonfire.addShard())
+                        {
+                            heldItem.stackSize--;
+                            return true;
+                        }
+                    }
+                    else if (heldItem.getItem() == ModItems.estus_ash)
+                    {
+                        if(bonfire.addAsh())
+                        {
+                            heldItem.stackSize--;
+                            return true;
+                        }
+                    }
+                    else if (heldItem.getItem() == ModItems.estus_flask)
+                    {
+                        bonfire.estusRestock(heldItem);
+                        return true;
+                    }
+                }
+                bonfire.removeShard();
+                bonfire.removeAsh();
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta)
+    {
+        return new TileEntityBonfire();
     }
 }
