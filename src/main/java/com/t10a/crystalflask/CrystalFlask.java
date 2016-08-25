@@ -19,7 +19,7 @@ public class CrystalFlask
     public static CrystalFlask instance;
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS,serverSide = Reference.SERVER_PROXY_CLASS)
-    private static ICommonProxy proxy;
+    public static ICommonProxy proxy;
 
     public static final CreativeTabs ESTUSTAB = new CrystalTab();
 
