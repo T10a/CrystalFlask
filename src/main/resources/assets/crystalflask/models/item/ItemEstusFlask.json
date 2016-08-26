@@ -1,14 +1,14 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "crystalflask:items/estus_6"
+        "layer0": "crystalflask:items/estus_7"
     },
     "overrides": [
         {
             "predicate": {
                 "empty": 1
             },
-            "model": "crystalflask:item/ItemEstusFlask_broken"
+            "model": "crystalflask:item/ItemEstusFlask_0"
         }
     ]
 }

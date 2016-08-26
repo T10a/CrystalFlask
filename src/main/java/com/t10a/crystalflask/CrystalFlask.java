@@ -23,6 +23,7 @@ public class CrystalFlask
 
     public static final CreativeTabs ESTUSTAB = new CrystalTab();
 
+    //Quick note: The println will go away in release versions. This is mainly so I can see when these chunks of code are loaded into the game.
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {

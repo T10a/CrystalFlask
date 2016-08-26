@@ -2,9 +2,6 @@ package com.t10a.crystalflask.items;
 
 import com.t10a.crystalflask.CrystalFlask;
 import com.t10a.crystalflask.Reference;
-import com.t10a.crystalflask.init.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
@@ -12,7 +9,6 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,6 +21,7 @@ public class ItemCrystalFlask extends Item
 {
     public ItemCrystalFlask()
     {
+        //It's a good idea to put the modid into the item's unlocalised name, to prevent conflicts in the en_US.lang.
         setUnlocalizedName(Reference.MOD_ID + "." + Reference.ItemBase.ESTUS.getUnlocalizedName());
         setRegistryName(Reference.ItemBase.ESTUS.getRegistryName());
         this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter()
@@ -39,7 +36,7 @@ public class ItemCrystalFlask extends Item
         this.setMaxStackSize(1);
     }
     //Catches whether or not this item is drinkable or not.
-    public static boolean getUsable(ItemStack stack)
+    private static boolean getUsable(ItemStack stack)
     {
         if(stack.getItemUseAction() == EnumAction.DRINK)
         {
@@ -90,7 +87,7 @@ public class ItemCrystalFlask extends Item
         return new ActionResult(EnumActionResult.SUCCESS, stack);
     }
 
-    //Another chunk. If this item has metadata, it'll get it. Then, if it has the metadata "Uses", it'll check to see if it is more than 0. If it is, and this isn't on the server side, it'll
+    //A pretty big chunk. If this item has metadata, it'll get it. Then, if it has the metadata "Uses", it'll check to see if it is more than 0. If it is, and this isn't on the server side, it'll
     @Nullable
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
     {
@@ -122,13 +119,14 @@ public class ItemCrystalFlask extends Item
         {
             nbt.setInteger("Uses", 1);
             nbt.setInteger("Max Uses", 1);
-            nbt.setInteger("Potency", 0);
+            nbt.setInteger("Potency", 1);
         }
         stack.setTagCompound(nbt);
 
         return super.onItemUseFinish(stack, worldIn, entityLiving);
     }
 
+    //Prints info to the item's description.
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List lores, boolean b)
@@ -140,4 +138,5 @@ public class ItemCrystalFlask extends Item
             lores.add("Potency: " + Integer.toString(stack.getTagCompound().getInteger("Potency")));
         }
     }
+    //TODO: Function that grabs the amount of uses, so that the PropertyOverride can call it, and adjust the texture based on the amount of uses.
 }

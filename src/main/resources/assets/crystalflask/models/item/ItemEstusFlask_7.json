@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "crystalflask:items/estus"
+        "layer0": "crystalflask:items/estus_7"
     }
 }

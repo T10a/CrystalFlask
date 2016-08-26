@@ -2,17 +2,17 @@ package com.t10a.crystalflask.tileentity;
 
 import com.t10a.crystalflask.init.ModItems;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
 
 public class TileEntityBonfire extends TileEntity
 {
-    public int shardCount = 0;
-    public int ashCount = 0;
+    //Variables telling the TileEntity what's currently contained.
+    private int shardCount = 0;
+    private int ashCount = 0;
 
+    //This tells the block how to handle adding new Shards.
     public boolean addShard()
     {
         if(shardCount < 1 && ashCount == 0)
@@ -22,7 +22,7 @@ public class TileEntityBonfire extends TileEntity
         }
         return false;
     }
-
+    //This tells the block how to handle removing a shard.
     public void removeShard()
     {
         if(shardCount > 0)
@@ -31,7 +31,7 @@ public class TileEntityBonfire extends TileEntity
             shardCount--;
         }
     }
-
+    //addAsh &  removeAsh does the same as addShard & removeShard, but for the Ash item. I COULD unify them under one call, but for now this works.
     public boolean addAsh()
     {
         if(ashCount < 1 && shardCount == 0)
@@ -50,6 +50,8 @@ public class TileEntityBonfire extends TileEntity
             ashCount--;
         }
     }
+
+    //This is a big chunk of code that used  to be on the flask. This handles the restocking the uses, and upgrading of the flask when this is called by BlockBonfire.
     public void estusRestock(ItemStack stack)
     {
         if(stack.getItem() == ModItems.estus_flask)
@@ -88,6 +90,7 @@ public class TileEntityBonfire extends TileEntity
         }
     }
 
+    //This merely saves the variables defined earlier to NBT.
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
@@ -98,6 +101,7 @@ public class TileEntityBonfire extends TileEntity
         return compound;
     }
 
+    //Similar to above, but it loads from NBT instead.
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {

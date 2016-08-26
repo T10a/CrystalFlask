@@ -9,6 +9,7 @@ public class ItemCrystalShard extends Item
     public ItemCrystalShard()
     {
         {
+            //It's a good idea to put the modid into the item's unlocalised name, to prevent conflicts in the en_US.lang.
             setUnlocalizedName(Reference.MOD_ID + "." + Reference.ItemBase.ESTUSSHARD.getUnlocalizedName());
             setRegistryName(Reference.ItemBase.ESTUSSHARD.getRegistryName());
             setCreativeTab(CrystalFlask.ESTUSTAB);

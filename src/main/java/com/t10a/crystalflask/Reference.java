@@ -2,6 +2,7 @@ package com.t10a.crystalflask;
 
 public class Reference
 {
+    //Basic info that the game needs when the mod itsef loads.
     public static final String MOD_ID = "crystalflask";
     public static final String NAME = "Crystal Flask";
     public static final String VERSION = "1.10.2-1.0";
@@ -10,6 +11,7 @@ public class Reference
     public static final String CLIENT_PROXY_CLASS = "com.t10a.crystalflask.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "com.t10a.crystalflask.proxy.ServerProxy";
 
+    //Enum that's for conveniently making new items.
     public enum ItemBase
     {
         ESTUS("estusflask","ItemEstusFlask"),
@@ -34,7 +36,7 @@ public class Reference
             return unlocalizedName;
         }
     }
-
+    //Same as ItemBase, but for blocks rather than items.
     public enum BlockBase
     {
         BONFIRE("bonfire","BlockBonfire");
