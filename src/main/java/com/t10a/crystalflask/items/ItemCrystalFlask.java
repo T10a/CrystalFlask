@@ -9,6 +9,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-//Yes, this is a ton of code. I'll try to clean it up ASAP.
+//Yes, this is a ton of code. I'll try to clean it up whenever I can.
 public class ItemCrystalFlask extends Item
 {
     public ItemCrystalFlask()
@@ -24,6 +25,18 @@ public class ItemCrystalFlask extends Item
         //It's a good idea to put the modid into the item's unlocalised name, to prevent conflicts in the en_US.lang.
         setUnlocalizedName(Reference.MOD_ID + "." + Reference.ItemBase.ESTUS.getUnlocalizedName());
         setRegistryName(Reference.ItemBase.ESTUS.getRegistryName());
+        //
+        this.addPropertyOverride(new ResourceLocation("uses"), new IItemPropertyGetter()
+        {
+            NBTTagCompound nbt;
+            @SideOnly(Side.CLIENT)
+            public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn)
+            {
+                nbt = stack.getTagCompound();
+                return MathHelper.clamp_float((float)nbt.getInteger("Uses") / (float)nbt.getInteger("Max Uses"), 0.0F, 1.0F);
+            }
+        });
+        //
         this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter()
         {
             @SideOnly(Side.CLIENT)
@@ -32,18 +45,25 @@ public class ItemCrystalFlask extends Item
                 return ItemCrystalFlask.getUsable(stack) ? 0.0F : 1.0F;
             }
         });
+        //
         setCreativeTab(CrystalFlask.ESTUSTAB);
         this.setMaxStackSize(1);
+
     }
+
+    private static boolean isUsed(ItemStack stack)
+    {
+        NBTTagCompound nbt;
+        nbt = stack.getTagCompound();
+        return nbt.hasKey("Uses") && nbt.getInteger("Uses") < nbt.getInteger("Max Uses");
+    }
+
     //Catches whether or not this item is drinkable or not.
     private static boolean getUsable(ItemStack stack)
     {
-        if(stack.getItemUseAction() == EnumAction.DRINK)
-        {
-            return true;
-        }
-        else return false;
+        return stack.getItemUseAction() == EnumAction.DRINK;
     }
+
     //If it's drinkable, return the drinking time ticks. If not, return 1 tick for the empty/null flask.
     public int getMaxItemUseDuration(ItemStack stack)
     {
@@ -137,6 +157,6 @@ public class ItemCrystalFlask extends Item
             lores.add("Max Uses: " + Integer.toString(stack.getTagCompound().getInteger("Max Uses")));
             lores.add("Potency: " + Integer.toString(stack.getTagCompound().getInteger("Potency")));
         }
+        else lores.add("Right click to activate the flask's potential.");
     }
-    //TODO: Function that grabs the amount of uses, so that the PropertyOverride can call it, and adjust the texture based on the amount of uses.
 }
