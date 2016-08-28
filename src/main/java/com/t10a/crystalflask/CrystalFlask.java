@@ -2,6 +2,7 @@ package com.t10a.crystalflask;
 
 import com.t10a.crystalflask.init.ModBlocks;
 import com.t10a.crystalflask.init.ModItems;
+import com.t10a.crystalflask.init.ModRecipes;
 import com.t10a.crystalflask.proxy.ICommonProxy;
 import com.t10a.crystalflask.tileentity.TileEntityBonfire;
 import net.minecraft.creativetab.CreativeTabs;
@@ -40,6 +41,8 @@ public class CrystalFlask
     {
         System.out.println("Initialisation!");
         proxy.init();
+
+        ModRecipes.register();
 
         GameRegistry.registerTileEntity(TileEntityBonfire.class, Reference.MOD_ID + "TileEntityBonfire");
     }

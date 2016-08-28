@@ -16,6 +16,7 @@ public class ModItems
 
     public static void init()
     {
+
         estus_flask = new ItemCrystalFlask();
         estus_shard = new ItemCrystalShard();
         estus_ash = new ItemCrystalAsh();

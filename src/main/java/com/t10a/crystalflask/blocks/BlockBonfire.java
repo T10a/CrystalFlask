@@ -10,8 +10,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -125,9 +128,23 @@ public class BlockBonfire extends Block implements ITileEntityProvider
                         bonfire.estusRestock(heldItem);
                         return true;
                     }
+                    else if (heldItem.getItem() == Items.BLAZE_ROD)
+                    {
+                        if(bonfire.addBlazeRod())
+                        {
+                            heldItem.stackSize--;
+                            return true;
+                        }
+                    }
+                    else if(heldItem.getItem() == Items.PRISMARINE_SHARD || (heldItem.getItem() == Items.SKULL && heldItem.getMetadata() == 1))
+                    {
+                        bonfire.bonfireCraft(heldItem);
+                        return true;
+                    }
                 }
                 bonfire.removeShard();
                 bonfire.removeAsh();
+                bonfire.removeBlazeRod();
             }
         }
         return true;

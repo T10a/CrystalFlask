@@ -17,6 +17,7 @@ public class Reference
         ESTUS("estusflask","ItemEstusFlask"),
         ESTUSSHARD("estus_shard","ItemEstusShard"),
         ESTUSASH("estus_ash","ItemEstusAsh");
+
         private String unlocalizedName;
         private String registryName;
 
