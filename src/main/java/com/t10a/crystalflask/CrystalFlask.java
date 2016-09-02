@@ -12,34 +12,34 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid= Reference.MOD_ID, name=Reference.NAME, version=Reference.VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSION)
 public class CrystalFlask
 {
-    @Mod.Instance
+    @Mod.Instance(Reference.MOD_ID)
     public static CrystalFlask instance;
 
-    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS,serverSide = Reference.SERVER_PROXY_CLASS)
+    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static ICommonProxy proxy;
 
     public static final CreativeTabs ESTUSTAB = new CrystalTab();
+
+    public static Logger logger;
 
     //Quick note: The println will go away in release versions. This is mainly so I can see when these chunks of code are loaded into the game.
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        System.out.println("Pre Initialisation!");
+        logger = event.getModLog();
         ModItems.init();
-        ModItems.register();
 
         ModBlocks.init();
-        ModBlocks.register();
     }
 
     @Mod.EventHandler
     public void Init(FMLInitializationEvent event)
     {
-        System.out.println("Initialisation!");
         proxy.init();
 
         ModRecipes.register();
@@ -50,6 +50,6 @@ public class CrystalFlask
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        System.out.println("Post Initialisation!");
+
     }
 }

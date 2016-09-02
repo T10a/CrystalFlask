@@ -1,7 +1,7 @@
 package com.t10a.crystalflask.items;
 
-import com.t10a.crystalflask.CrystalFlask;
 import com.t10a.crystalflask.Reference;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
@@ -20,12 +20,13 @@ import java.util.List;
 //Yes, this is a ton of code. I'll try to clean it up whenever I can.
 public class ItemCrystalFlask extends Item
 {
-    public ItemCrystalFlask()
+    public ItemCrystalFlask(String name, CreativeTabs tabs)
     {
         //It's a good idea to put the modid into the item's unlocalised name, to prevent conflicts in the en_US.lang.
-        setUnlocalizedName(Reference.MOD_ID + "." + Reference.ItemBase.ESTUS.getUnlocalizedName());
-        setRegistryName(Reference.ItemBase.ESTUS.getRegistryName());
-        //
+        this.setUnlocalizedName(Reference.MOD_ID + "." + name);
+        this.setRegistryName(Reference.MOD_ID, name);
+        this.setCreativeTab(tabs);
+
         this.addPropertyOverride(new ResourceLocation("uses"), new IItemPropertyGetter()
         {
             NBTTagCompound nbt;
@@ -36,7 +37,7 @@ public class ItemCrystalFlask extends Item
                 return MathHelper.clamp_float((float)nbt.getInteger("Uses") / (float)nbt.getInteger("Max Uses"), 0.0F, 1.0F);
             }
         });
-        //
+
         this.addPropertyOverride(new ResourceLocation("empty"), new IItemPropertyGetter()
         {
             @SideOnly(Side.CLIENT)
@@ -45,8 +46,6 @@ public class ItemCrystalFlask extends Item
                 return ItemCrystalFlask.getUsable(stack) ? 0.0F : 1.0F;
             }
         });
-        //
-        setCreativeTab(CrystalFlask.ESTUSTAB);
         this.setMaxStackSize(1);
 
     }

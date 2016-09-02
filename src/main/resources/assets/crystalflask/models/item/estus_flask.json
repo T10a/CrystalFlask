@@ -1,0 +1,13 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "crystalflask:items/estus_4"
+    },
+    "overrides": [
+        { "predicate": { "uses": 0.05 }, "model" : "crystalflask:item/estus_flask_1" },
+        { "predicate": { "uses": 0.3 }, "model" : "crystalflask:item/estus_flask_2" },
+        { "predicate": { "uses": 0.7 }, "model" : "crystalflask:item/estus_flask_3" },
+        { "predicate": { "uses": 0.9 }, "model" : "crystalflask:item/estus_flask_4" },
+        { "predicate": { "empty": 1 }, "model" : "crystalflask:item/estus_flask_0" }
+    ]
+}

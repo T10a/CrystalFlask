@@ -1,5 +1,6 @@
 package com.t10a.crystalflask.init;
 
+import com.t10a.crystalflask.CrystalFlask;
 import com.t10a.crystalflask.blocks.BlockBonfire;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -14,7 +15,8 @@ public class ModBlocks
 
     public static void init()
     {
-        bonfire = new BlockBonfire();
+        bonfire = new BlockBonfire("bonfire", CrystalFlask.ESTUSTAB);
+        register();
     }
 
     public static void register()
