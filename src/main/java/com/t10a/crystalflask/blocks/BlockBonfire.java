@@ -3,7 +3,6 @@ package com.t10a.crystalflask.blocks;
 import com.t10a.crystalflask.Reference;
 import com.t10a.crystalflask.init.ModItems;
 import com.t10a.crystalflask.tileentity.TileEntityBonfire;
-import com.t10a.crystalflask.tileentity.TileEntityBonfire.StackHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -13,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -23,16 +21,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 import java.util.Random;
 
 public class BlockBonfire extends Block
 {
-
-    TileEntityBonfire.StackHandler stackHandler = (StackHandler) new TileEntityBonfire.StackHandler();
     //private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(x1, y1, z1, x2, y2, z2);
     //This sets the hitbox for this block,
     private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0.0625 * 3, 0, 0.0625 * 4, 0.0625 * 12, 0.0625 * 15, 0.0625 * 12);
@@ -77,14 +71,14 @@ public class BlockBonfire extends Block
     }
 
     //WIP. Pretty much is responsible for the particle effects this block emits.
-    //TODO: Make this emit special particles based on what item is contained.
+    //TODO: Make the bonfire particles resemble the flames in the actual game. THEN make them change based on what's in it.
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
     {
         double d0 = (double)pos.getX() + 0.5D;
-        double d1 = (double)pos.getY() + rand.nextDouble() * 6.0D / 16.0D;
+        double d1 = (double)pos.getY() + 0.7D;
         double d2 = (double)pos.getZ() + 0.5D;
-        double d3 = rand.nextDouble() * 0.6D - 0.3D;
+        double d3 = rand.nextDouble() * 0.6D - 0.7D;
 
         if (rand.nextDouble() < 0.3D)
         {
@@ -100,25 +94,16 @@ public class BlockBonfire extends Block
             if (tileEntity instanceof TileEntityBonfire)
             {
                 TileEntityBonfire bonfire = (TileEntityBonfire) tileEntity;
-                if(bonfire.stack.getItem() == ModItems.estus_shard)
+                if(bonfire.getStoredShard() > 0)
                 {
                     worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
-                    worldIn.spawnParticle(EnumParticleTypes.CRIT, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
+                    worldIn.spawnParticle(EnumParticleTypes.CRIT_MAGIC, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
                     worldIn.spawnParticle(EnumParticleTypes.FLAME, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
                 }
-                else if(bonfire.stack.getItem() == ModItems.estus_ash)
+                else if(bonfire.getStoredAsh() > 0)
                 {
                     worldIn.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
                     worldIn.spawnParticle(EnumParticleTypes.FLAME, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
-                }
-                else if(bonfire.stack.getItem() == Items.BLAZE_ROD)
-                {
-                    worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
-                    worldIn.spawnParticle(EnumParticleTypes.FLAME, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
-                    if(rand.nextDouble() > 0.3D)
-                    {
-                        worldIn.spawnParticle(EnumParticleTypes.LAVA, d0, d1 + d3, d2, 0.0D, 0.0D, 0.0D, 0);
-                    }
                 }
                 else
                 {
@@ -130,6 +115,7 @@ public class BlockBonfire extends Block
         */
     }
     //This pretty much tells the TileEntity class what to do based on what's right-clicking it.
+    //TODO: As stated in TileEntityBonfire, implement a more proper way of handling items.
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(!worldIn.isRemote)
@@ -140,28 +126,33 @@ public class BlockBonfire extends Block
                 TileEntityBonfire bonfire = (TileEntityBonfire) tileEntity;
                 if(heldItem != null)
                 {
-                    if (heldItem.getItem() == ModItems.estus_shard || heldItem.getItem() == ModItems.estus_ash || heldItem.getItem() == Items.BLAZE_ROD)
+                    if (heldItem.getItem() == ModItems.estus_shard)
                     {
-                        stackHandler.insertItem(0, heldItem, false);
-                        heldItem.stackSize--;
-                        return true;
+                        if(bonfire.addShard())
+                        {
+                            heldItem.stackSize--;
+                            return true;
+                        }
                     }
-                    else if (heldItem.getItem() == ModItems.estus_flask)
+                    else if(heldItem.getItem() == ModItems.estus_ash)
+                    {
+                        if(bonfire.addAsh())
+                        {
+                            heldItem.stackSize--;
+                            return true;
+                        }
+                    }
+                    else if(heldItem.getItem() == ModItems.estus_flask)
                     {
                         bonfire.estusRestock(heldItem);
                         return true;
                     }
-                    else if(heldItem.getItem() == Items.PRISMARINE_SHARD || (heldItem.getItem() == Items.SKULL && heldItem.getMetadata() == 1))
-                    {
-                        bonfire.bonfireCraft(heldItem);
-                        return true;
-                    }
                 }
-                stackHandler.extractItem(0, 1, true);
-                return true;
+                bonfire.removeShard();
+                bonfire.removeAsh();
             }
         }
-        return false;
+        return true;
     }
 
     //Tells the game this has a TileEntity

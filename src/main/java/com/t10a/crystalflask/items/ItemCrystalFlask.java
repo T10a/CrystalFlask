@@ -50,13 +50,6 @@ public class ItemCrystalFlask extends Item
 
     }
 
-    private static boolean isUsed(ItemStack stack)
-    {
-        NBTTagCompound nbt;
-        nbt = stack.getTagCompound();
-        return nbt.hasKey("Uses") && nbt.getInteger("Uses") < nbt.getInteger("Max Uses");
-    }
-
     //Catches whether or not this item is drinkable or not.
     private static boolean getUsable(ItemStack stack)
     {
